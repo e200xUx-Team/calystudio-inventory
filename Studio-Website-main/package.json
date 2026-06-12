@@ -1,0 +1,25 @@
+{
+  "name": "eplane-clay-studio",
+  "version": "2.0.0",
+  "description": "The ePlane Co. \u2014 Clay Studio Inventory & Project Dashboard (Full-Stack)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "init-db": "node db/init.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.22.1",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^6.9.14",
+    "sql.js": "^1.14.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "notes": {
+    "install": "Run: npm install  (better-sqlite3 requires a C++ compiler \u2014 pre-installed on Linux/macOS; on Windows install Build Tools)"
+  }
+}

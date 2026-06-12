@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>The ePlane Co. — Clay Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Pre-JS loading state — removed by app.js once ready */
+    #cold-start-loader {
+      position: fixed;
+      inset: 0;
+      background: #0d1b2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      gap: 16px;
+    }
+
+    #cold-start-loader .cs-logo {
+      width: 56px;
+      height: 56px;
+      background: #2563eb;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+    }
+
+    #cold-start-loader .cs-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: rgba(255, 255, 255, .5);
+      font-weight: 500;
+      letter-spacing: .5px;
+    }
+
+    #cold-start-loader .cs-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    #cold-start-loader .cs-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2563eb;
+      opacity: .3;
+      animation: cs-pulse 1.2s infinite;
+    }
+
+    #cold-start-loader .cs-dots span:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    #cold-start-loader .cs-dots span:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes cs-pulse {
+
+      0%,
+      80%,
+      100% {
+        opacity: .3
+      }
+
+      40% {
+        opacity: 1
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Cold-start loader: visible before JS loads, removed by app.js -->
+  <div id="cold-start-loader">
+    <div class="cs-logo">eP</div>
+    <div class="cs-text">THE EPLANE CO. — CLAY STUDIO</div>
+    <div class="cs-dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════════════════ -->
+  <div id="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-icon">eP</div>
+        <div>
+          <div class="auth-brand-name">The ePlane Co.</div>
+          <div class="auth-brand-sub">Clay Studio Inventory</div>
+        </div>
+      </div>
+      <h2 class="auth-title">Welcome back</h2>
+      <p class="auth-desc">Sign in with your <strong>@eplane.ai</strong> company email</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+      <input class="auth-input" id="auth-email" type="email" placeholder="you@eplane.ai" />
+      <input class="auth-input" id="auth-name" type="text" placeholder="Full name" style="display:none" />
+      <input class="auth-input" id="auth-pass" type="password" placeholder="Password (min 6 chars)"
+        onkeydown="if(event.key==='Enter') doAuth()" />
+      <div class="auth-forgot" id="forgot-row">
+        <a href="#" class="auth-forgot-link" onclick="showForgotPassword(); return false;">Forgot password?</a>
+      </div>
+      <div class="auth-err" id="auth-err"></div>
+      <button class="auth-btn" id="auth-submit" onclick="doAuth()">Sign In</button>
+      <p class="auth-hint">Only @eplane.ai accounts are permitted</p>
+
+      <!-- Forgot Password Panel — content rendered dynamically by app.js -->
+      <div class="forgot-panel" id="forgot-panel" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════════ -->
+  <div id="app" class="app-hidden">
+
+    <!-- Mobile Top Header -->
+    <header class="mobile-header">
+      <div class="mh-brand">
+        <div class="sb-icon">eP</div>
+        <span class="mh-title">ePlane Studio</span>
+      </div>
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </header>
+
+    <div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+    <!-- ── SIDEBAR ── -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sb-brand">
+        <div class="sb-logo">
+          <div class="sb-icon">eP</div>
+          <div>
+            <div class="sb-name">The ePlane Co.</div>
+            <div class="sb-sub">Clay Studio</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sb-nav">
+        <div class="sb-section-label">Workspace</div>
+        <a class="nav-item active" id="nav-dashboard" onclick="go('dashboard')">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          Dashboard
+        </a>
+        <a class="nav-item" id="nav-inventory" onclick="go('inventory')">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+          </svg>
+          Inventory
+        </a>
+        <a class="nav-item" id="nav-projects" onclick="go('projects')">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+          Projects
+        </a>
+        <a class="nav-item" id="nav-borrows" onclick="go('borrows')">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 3h5v5" />
+            <path d="M21 3l-7 7" />
+            <path d="M8 21H3v-5" />
+            <path d="M3 21l7-7" />
+          </svg>
+          Borrow Tracker
+          <span class="nav-badge" id="borrow-badge" style="display:none">0</span>
+        </a>
+        <a class="nav-item" id="nav-analytics" onclick="go('analytics')">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+          Analytics
+        </a>
+
+        <!-- Admin-only nav item -->
+        <a class="nav-item admin-only" id="nav-admin" onclick="go('admin')" style="display:none">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          User Management
+          <span class="nav-badge" id="pending-badge" style="display:none;background:var(--amber)">0</span>
+        </a>
+
+        <div class="sb-section-label" style="margin-top:8px">Reports</div>
+        <a class="nav-item" onclick="openPDF()">
+          <svg class="nav-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Export PDF
+        </a>
+      </nav>
+
+      <div class="sb-footer">
+        <div class="user-pill">
+          <div class="user-avatar" id="sidebar-avatar">--</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebar-username">User</div>
+            <div class="user-role" id="sidebar-role">Studio Member</div>
+          </div>
+          <button class="logout-btn" onclick="logout()" title="Sign out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main id="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="page-sub" id="page-sub">Studio overview</div>
+        </div>
+        <div class="topbar-actions" id="topbar-actions">
+          <button class="btn btn-outline btn-sm" onclick="openPDF()">↓ PDF</button>
+          <button class="btn btn-primary btn-sm" onclick="openItemDrawer('add')">+ Add Item</button>
+        </div>
+      </div>
+      <!-- Loading spinner shown during API calls -->
+      <div id="page-loader" class="page-loader" style="display:none">
+        <div class="loader-spinner"></div>
+      </div>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     ITEM DRAWER
+══════════════════════════════════════════════ -->
+  <div class="drawer-overlay" id="item-overlay" onclick="closeItemDrawer()"></div>
+  <div class="drawer" id="item-drawer">
+    <div class="drawer-header">
+      <span class="drawer-title" id="item-drawer-title">Add Item</span>
+      <button class="close-btn" onclick="closeItemDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+      <input type="hidden" id="item-edit-id" />
+      <div class="form-group">
+        <label class="form-label">Material Name *</label>
+        <input class="form-input" id="f-name" placeholder="e.g. Polymer Clay White" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="f-cat">
+          <option>Clay &amp; Armature</option>
+          <option>Sculpting Tools</option>
+          <option>Paints &amp; Finishes</option>
+          <option>Mold Materials</option>
+          <option>Safety &amp; Studio</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Unit</label>
+          <select class="form-select" id="f-unit">
+            <option>kg</option>
+            <option>g</option>
+            <option>lbs</option>
+            <option>liters</option>
+            <option>ml</option>
+            <option>units</option>
+            <option>packs</option>
+            <option>sheets</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Unit Price (₹)</label>
+          <input class="form-input" id="f-price" type="number" placeholder="0.00" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Total Qty</label>
+          <input class="form-input" id="f-total" type="number" placeholder="0" min="0" step="0.1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Used Qty</label>
+          <input class="form-input" id="f-used" type="number" placeholder="0" min="0" step="0.1" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Linked Project</label>
+        <select class="form-select" id="f-project">
+          <option value="">— Studio Stock —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reorder Threshold</label>
+        <input class="form-input" id="f-threshold" type="number" placeholder="e.g. 2" min="0" step="0.1" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">MR Number</label>
+        <input class="form-input" id="f-notes" placeholder="e.g. MR-007" />
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn btn-primary" style="flex:1" onclick="saveItem()">Save Item</button>
+      <button class="btn btn-outline" onclick="closeItemDrawer()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     PROJECT DRAWER
+══════════════════════════════════════════════ -->
+  <div class="drawer-overlay" id="proj-overlay" onclick="closeProjDrawer()"></div>
+  <div class="drawer" id="proj-drawer">
+    <div class="drawer-header">
+      <span class="drawer-title" id="proj-drawer-title">New Project</span>
+      <button class="close-btn" onclick="closeProjDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+      <input type="hidden" id="proj-edit-id" />
+      <div class="form-group">
+        <label class="form-label">Project Name *</label>
+        <input class="form-input" id="p-name" placeholder="e.g. Dragon Scale Series" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Client / Description</label>
+        <input class="form-input" id="p-desc" placeholder="Client name or description" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Budget (₹)</label>
+          <input class="form-input" id="p-budget" type="number" placeholder="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Progress (%)</label>
+          <input class="form-input" id="p-progress" type="number" placeholder="0" min="0" max="100" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="p-status">
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+          <option value="on-hold">On Hold</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deadline</label>
+        <input class="form-input" id="p-deadline" type="date" />
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn btn-primary" style="flex:1" onclick="saveProject()">Save Project</button>
+      <button class="btn btn-outline" onclick="closeProjDrawer()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     BORROW DRAWER
+══════════════════════════════════════════════ -->
+  <div class="drawer-overlay" id="borrow-overlay" onclick="closeBorrowDrawer()"></div>
+  <div class="drawer" id="borrow-drawer">
+    <div class="drawer-header">
+      <span class="drawer-title" id="borrow-drawer-title">Log Borrowed Item</span>
+      <button class="close-btn" onclick="closeBorrowDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+      <input type="hidden" id="borrow-edit-id" />
+      <div class="form-group">
+        <label class="form-label">Borrower Name *</label>
+        <input class="form-input" id="b-person" placeholder="e.g. Arjun Mehta" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Team</label>
+        <input class="form-input" id="b-team" placeholder="e.g. Design Studio" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Item Borrowed *</label>
+        <input class="form-input" id="b-item" list="b-item-options" placeholder="e.g. Silicone Mold Rubber" />
+        <datalist id="b-item-options"></datalist>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date Borrowed</label>
+          <input class="form-input" id="b-date" type="date" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Returned?</label>
+          <select class="form-select" id="b-returned">
+            <option value="0">No — still with them</option>
+            <option value="1">Yes — returned</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <input class="form-input" id="b-notes" placeholder="e.g. quantity, condition, expected return" />
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn btn-primary" style="flex:1" onclick="saveBorrow()">Save Record</button>
+      <button class="btn btn-outline" onclick="closeBorrowDrawer()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     PDF PREVIEW MODAL
+══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="pdf-overlay" onclick="closePDF()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">PDF Report Preview</span>
+        <div class="modal-actions">
+          <button class="btn btn-primary btn-sm" onclick="window.print()">🖨 Print / Save PDF</button>
+          <button class="close-btn" onclick="closePDF()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" id="pdf-content"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+     CONFIRM DIALOG
+══════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="confirm-overlay">
+    <div class="confirm-dialog">
+      <div class="confirm-msg" id="confirm-msg">Are you sure?</div>
+      <div class="confirm-actions">
+        <button class="btn btn-danger btn-sm" id="confirm-yes">Delete</button>
+        <button class="btn btn-outline btn-sm" onclick="closeConfirm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

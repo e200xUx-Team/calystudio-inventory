@@ -1,0 +1,68 @@
+========================================================
+  HOW TO RUN  —  The ePlane Co. Clay Studio
+========================================================
+
+This is a FULL-STACK app. The login page you see is only the
+front end — it has to talk to a small server running on your
+computer. If that server isn't running, you get:
+
+    "Can't reach the server..."
+
+That is NOT a password problem. It just means the server isn't on.
+
+--------------------------------------------------------
+EASIEST WAY TO START (double-click)
+--------------------------------------------------------
+  Windows : double-click   start-windows.bat
+  Mac     : double-click   start-mac.command
+            (first time: right-click > Open, to bypass the
+             "unidentified developer" warning)
+  Linux   : run            ./start-linux.sh
+
+The first run installs dependencies (~30 seconds). After that
+a window stays open showing:
+
+    The ePlane Co. Clay Studio -> http://localhost:3000
+
+--------------------------------------------------------
+THEN, IN YOUR BROWSER
+--------------------------------------------------------
+  Open exactly:   http://localhost:3000
+
+  Do NOT open the index.html file by double-clicking it. If the
+  address bar shows something starting with  file:///  that is
+  the problem — close it and go to http://localhost:3000 instead.
+
+--------------------------------------------------------
+LOG IN (use the "Sign In" tab, not "Sign Up")
+--------------------------------------------------------
+  Email:    rahul.sp@eplane.ai
+  Password: Rahul@150178
+
+  (Your accounts are set in the .env file. The second admin,
+   rajan.sunjay@eplane.ai, has a temporary password
+   ChangeMe-Rajan-2026 — change it in .env and restart.)
+
+--------------------------------------------------------
+QUICK CHECK: IS THE SERVER UP?
+--------------------------------------------------------
+  With the server running, open:
+      http://localhost:3000/api/health
+  You should see:  {"ok":true, ...}
+  If that works but the app doesn't, you opened the app at the
+  wrong address — use http://localhost:3000
+
+--------------------------------------------------------
+MANUAL START (if you prefer the terminal)
+--------------------------------------------------------
+  npm install
+  npm run dev
+  then open http://localhost:3000
+
+--------------------------------------------------------
+DEPLOYING TO VERCEL (optional)
+--------------------------------------------------------
+  Don't rely on the .env file there. In the Vercel dashboard set:
+  JWT_SECRET, ADMIN_EMAIL_1, ADMIN_NAME_1, ADMIN_PASS_1,
+  ADMIN_EMAIL_2, ADMIN_NAME_2, ADMIN_PASS_2  (use a NEW JWT_SECRET).
+========================================================
